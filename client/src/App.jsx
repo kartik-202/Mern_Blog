@@ -5,15 +5,17 @@ import Home from "./pages/Home";
 import Projects from "./pages/Projects";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
+import Header from './Components/Header';
 
 
 export default function App() {
   return (
     <BrowserRouter>
+    <Header/> 
     <Routes>
-      <Route path="/" element={<About/>}/>
+      <Route path="/About" element={<About/>}/>
       <Route path="/DashBoard" element={<DashBoard/>}/>
-      <Route path="/Home" element={<Home/>}/>
+      <Route path="/" element={<Home/>}/>
       <Route path="/Projects" element={<Projects/>}/>
       <Route path="/Signin" element={<Signin/>}/>
       <Route path="/Signup" element={<Signup/>}/>
