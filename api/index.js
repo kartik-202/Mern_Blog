@@ -25,3 +25,13 @@ app.use(express.json());
 
 app.use('/api/user' , userrouter); 
 app.use('/api/auth', authrouter);
+
+app.use((err,req,res,next)=>{
+    const statuscode=err.statuscode||500;
+    const message=err.message||"internal server error";
+    res.status(statuscode).json({
+        success:false,
+        statuscode,
+        message
+    })
+})
