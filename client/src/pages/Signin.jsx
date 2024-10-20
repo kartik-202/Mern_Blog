@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { signInStart,signInfailure,signInSuccess } from '../redux/user/userSlice';
 
 export default function Signin() {
-  const {loading,error:errorMessage}=useSelector(state=>state.user);
+  const {loading,error:errorMessage}=useSelector((state)=>state.user);
   const dispatch=useDispatch();
   const [formData,setFormData] = useState({}); 
   const navigate=useNavigate();
@@ -26,11 +26,15 @@ export default function Signin() {
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(formData),
       });
+      
       const data=await res.json();
+
       if(data.success===false){
-        dispatch(signInfailure(data.message));
+        return dispatch(signInfailure(data.message));
       }
       if(res.ok){
+        console.log((data.user))
+        dispatch(signInSuccess(data.user));
         navigate('/Home'); 
       }
       
