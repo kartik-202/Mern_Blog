@@ -8,9 +8,10 @@ import Signup from "./pages/Signup";
 import Header from './Components/Header';
 import Footercomp from "./Components/Footer";
 import PrivateRoute from './Components/PrivateRoute';
-
+import React from 'react'
 
 export default function App() {
+
   return (
     <BrowserRouter>
     <Header/> 
