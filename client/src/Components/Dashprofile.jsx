@@ -11,6 +11,7 @@ export default function Dashsidebar() {
     const [formdata,setFormData]=useState({});
     const [updateusersuccess,setUpdateUserSuccess]=useState(null);
     const [updateerror,setUpdateError]=useState(null);
+    const [showModal,setShowModal]=useState(false);
     const fileref=useRef();
     const dispatch=useDispatch();
 
@@ -105,7 +106,7 @@ export default function Dashsidebar() {
       <Button type='submit' gradientDuoTone='purpleToBlue'>Update</Button>
       </form>
       <div className='text-red-500 flex justify-between mt-5'>
-        <span className='cursor-pointer'>Delete Account</span>
+        <span onClick={()=>setShowModal(true)} className='cursor-pointer'>Delete Account</span>
         <span className='cursor-pointer'>Sign Out</span>
       </div>
       {updateusersuccess &&(
