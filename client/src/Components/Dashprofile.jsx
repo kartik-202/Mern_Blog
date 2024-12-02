@@ -1,11 +1,12 @@
-import { Alert, Button, TextInput } from 'flowbite-react';
+import { Alert, Button, Modal, ModalHeader, TextInput } from 'flowbite-react';
 import { useEffect, useRef, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from "axios";
-import { updateFailure,updateStart,updateSuccess } from '../redux/user/userSlice';
+import { updateFailure,updateStart,updateSuccess,deleteUserFailure,deleteUserStart,deleteUserSuccess,signoutSuccess} from '../redux/user/userSlice';
+import {HiOutlineExclamationCircle} from 'react-icons/hi'
 
 export default function Dashsidebar() {
-    const {currentUser} = useSelector(state=>state.user)
+    const {currentUser,error} = useSelector(state=>state.user)
     const [imagefile,SetImageFile]=useState(null);
     const [imagefileurl,SetImageFileURL]=useState(null);
     const [formdata,setFormData]=useState({});
@@ -57,6 +58,7 @@ export default function Dashsidebar() {
     )
 
     const handlesubmit=async(e)=>{
+      console.log('Current User :', currentUser);
       e.preventDefault();
       setUpdateError(null);
       setUpdateUserSuccess(null);
@@ -91,6 +93,43 @@ export default function Dashsidebar() {
       }
     }
 
+    const handledeleteUser=async()=>{
+        setShowModal(false);
+        try {
+          dispatch(deleteUserStart());
+          const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+            method: 'DELETE',
+            
+          });
+          const data=await res.json();
+          if(!res.ok){
+            dispatch(deleteUserFailure(data.message));
+
+          }else{
+            dispatch(deleteUserSuccess(data));
+          }
+        } catch (error) {
+          dispatch(deleteUserFailure(error.message));
+        }
+    }
+
+    const handleSignout=async ()=>{
+      try {
+        const res=await fetch(`api/user/signout`,{
+          method:'POST',
+        })
+        const data=res.json();
+        if(!res.ok){
+          console.log(data.message);
+        }
+        else{
+          dispatch(signoutSuccess());
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+
     return (
         <div className='max-w-lg mx-auto p-3 w-full'>
             <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
@@ -107,7 +146,7 @@ export default function Dashsidebar() {
       </form>
       <div className='text-red-500 flex justify-between mt-5'>
         <span onClick={()=>setShowModal(true)} className='cursor-pointer'>Delete Account</span>
-        <span className='cursor-pointer'>Sign Out</span>
+        <span className='cursor-pointer' onClick={handleSignout}>Sign Out</span>
       </div>
       {updateusersuccess &&(
         <Alert color='success' className='mt-5'>
@@ -119,6 +158,30 @@ export default function Dashsidebar() {
           {updateerror}
         </Alert>
       )}
+      {error &&(
+        <Alert color='failure' className='mt-5'>
+          {error}
+        </Alert>
+      )}
+
+
+      <Modal show={showModal} onClose={()=>setShowModal(false)} popup size="md">
+        
+        <Modal.Header/>
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto'/>
+            <h3 className='mb-3 text-lg text-gray-500 dark:text-gray-400'>Are you sure you want to delete your account??</h3>
+          
+          <div className='flex justify-center gap-4'>
+          <Button color='failure' onClick={handledeleteUser}>Yes,I want to delete my account</Button>
+          <Button onClick={()=>setShowModal(false)} >No,take me back</Button>
+          </div>
+          
+          </div>
+        </Modal.Body>
+
+      </Modal>
       </div>
     )
 }
